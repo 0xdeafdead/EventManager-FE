@@ -33,6 +33,9 @@ importers:
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.10.0)
+      '@types/node':
+        specifier: ^22.13.5
+        version: 22.13.5
       '@types/react':
         specifier: ^19.0.8
         version: 19.0.10

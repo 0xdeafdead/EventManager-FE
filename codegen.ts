@@ -6,6 +6,9 @@ const config: CodegenConfig = {
   documents: "src/**/*.tsx",
   ignoreNoDocuments: true,
   generates: {
+    "./src/types.ts": {
+      plugins: ["typescript", "typescript-resolvers"],
+    },
     "./src/gql/": {
       preset: "client",
       config: {

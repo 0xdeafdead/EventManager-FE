@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { Event, ResponseType } from "../../types/event";
+import { Event, ResponseType } from "../types/event";
 import {
   Button,
   Grid2 as Grid,
@@ -56,7 +56,7 @@ const EventPage: React.FC = () => {
     `
   );
 
-  const [respondToEvent, respondMutationResult] = useMutation<Event>(
+  const [respondToEvent] = useMutation<Event>(
     gql`
       mutation RespondToEvent($input: RespondToEventInput!) {
         respondToEvent(respondToEventInput: $input) {

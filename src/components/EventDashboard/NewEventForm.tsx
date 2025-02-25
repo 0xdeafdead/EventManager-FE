@@ -1,17 +1,31 @@
 import { gql, useMutation } from "@apollo/client";
-import { Button, Paper, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Guests } from "../../types";
 
-const NewEventForm: React.FC = () => {
-  const navigate = useNavigate();
+export interface NewEventModalProps {
+  open: boolean;
+  onClose: () => void;
+  refetchEvents: () => void;
+}
+
+const NewEventModal: React.FC<NewEventModalProps> = ({
+  open,
+  onClose,
+  refetchEvents,
+}) => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
-  const [guests, setGuests] = useState<{ name: string; email: string }[]>([
-    { name: "", email: "" },
-  ]);
+  const [guests, setGuests] = useState<Guests[]>([{ fullName: "", email: "" }]);
 
-  const [createEvent, { data, loading, error }] = useMutation(gql`
+  const [createEvent, { loading, error }] = useMutation(gql`
     mutation CreateEvent($createEventInput: CreateEventInput!) {
       createEvent(createEventInput: $createEventInput) {
         _id
@@ -35,49 +49,38 @@ const NewEventForm: React.FC = () => {
         createEventInput: {
           title,
           date: new Date(date).getTime(),
-          guests: guests.map((guest) => ({
-            fullName: guest.name,
-            email: guest.email,
-          })),
+          guests,
         },
       },
-      context: {
-        headers: { authorization: `Bearer ${sessionStorage.getItem("token")}` },
-      },
-    })
-      .then((result) => {
-        console.log("Event created", result);
-        navigate("/", { state: result.data.createEvent._id });
-      })
-      .catch((error) => {
-        console.log("Error creating event", error);
-      });
+    });
+    onClose();
+    refetchEvents();
   };
 
   const handleCancel = () => {
-    navigate("/");
+    onClose();
   };
 
   return (
-    <Paper sx={{ padding: 3, margin: 2 }}>
-      <Typography variant="h5">Create Event</Typography>
-      <TextField
-        autoFocus
-        label="Event Title"
-        fullWidth
-        margin="normal"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <TextField
-        label="Event Date"
-        type="date"
-        fullWidth
-        margin="normal"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-      <section>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle variant="h5">Create Event</DialogTitle>
+      <DialogContent>
+        <TextField
+          autoFocus
+          label="Event Title"
+          fullWidth
+          margin="normal"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <TextField
+          label="Event Date"
+          type="date"
+          fullWidth
+          margin="normal"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
         {guests.map((guest, index) => (
           <div key={index}>
             <Typography>Participant {index + 1}</Typography>
@@ -85,10 +88,10 @@ const NewEventForm: React.FC = () => {
               label="Guest Name"
               fullWidth
               margin="normal"
-              value={guest.name}
+              value={guest.fullName}
               onChange={(e) => {
                 const newGuests = [...guests];
-                newGuests[index].name = e.target.value;
+                newGuests[index].fullName = e.target.value;
                 setGuests(newGuests);
               }}
             />
@@ -110,31 +113,31 @@ const NewEventForm: React.FC = () => {
           color="primary"
           onClick={() => {
             const newGuests = [...guests];
-            newGuests.push({ name: "", email: "" });
+            newGuests.push({ fullName: "", email: "" });
             setGuests(newGuests);
           }}
         >
           Add Participant
         </Button>
-      </section>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleCreate}
-        sx={{ marginTop: 2 }}
-      >
-        Create
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={handleCancel}
-        sx={{ marginTop: 2, marginLeft: 1 }}
-      >
-        Cancel
-      </Button>
-    </Paper>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCreate}
+          sx={{ marginTop: 2 }}
+        >
+          Create
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleCancel}
+          sx={{ marginTop: 2, marginLeft: 1 }}
+        >
+          Cancel
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default NewEventForm;
+export default NewEventModal;

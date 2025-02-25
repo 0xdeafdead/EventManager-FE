@@ -1,6 +1,10 @@
 import { Paper, Typography } from "@mui/material";
-import { EventItemProp } from "../../types/event";
 import { useNavigate } from "react-router-dom";
+import { Event } from "../../types";
+
+export interface EventItemProp {
+  event: Event;
+}
 
 const EventItem: React.FC<EventItemProp> = ({ event }) => {
   const navigate = useNavigate();

@@ -1,6 +1,11 @@
 import { Typography } from "@mui/material";
-import { UserDataProps } from "../../types/userData";
 import { Grid2 as Grid } from "@mui/material";
+
+export interface UserDataProps {
+  name: string;
+  managedEvets: number;
+  assistedEvents: number;
+}
 
 const UserData: React.FC<UserDataProps> = ({
   name,

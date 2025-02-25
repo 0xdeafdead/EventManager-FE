@@ -19,16 +19,13 @@ export interface Event {
   participants: Participant[];
 }
 
-export interface EventItemProp {
-  event: Event;
-}
+export type Guests = {
+  fullName: string;
+  email: string;
+};
 
-export interface EventPageProps {
-  event: Event | null;
-  userEmail: string;
-}
-
-export interface EventSectionProps {
-  sectionTitle: string;
-  events: Event[];
-}
+export type CreateEventInput = {
+  title: string;
+  date: number;
+  guests: Guests[];
+};

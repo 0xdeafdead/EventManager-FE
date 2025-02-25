@@ -1,15 +1,18 @@
 import { Button, Grid2 as Grid, Paper } from "@mui/material";
-import UserData from "./UserData";
-import { Event } from "../../types";
+import UserData from "../components/EventDashboard/UserData";
+import { Event } from "../types";
 import { useNavigate } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
-import EventSection from "./EventSection";
+import EventSection from "../components/EventDashboard/EventSection";
+import { useState } from "react";
+import NewEventModal from "../components/EventDashboard/NewEventForm";
 
 const EventDashboard: React.FC = () => {
   const navigate = useNavigate();
   const sessionFullName = sessionStorage.getItem("sessionFullName");
   const sessionEmail = sessionStorage.getItem("sessionEmail");
   const token = sessionStorage.getItem("token");
+  const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
 
   if (!token) {
     navigate("/login");
@@ -19,7 +22,9 @@ const EventDashboard: React.FC = () => {
 
   const assistedEvents: Event[] = [];
 
-  const { data, loading, error } = useQuery<{ getAllRelatedEvents: Event[] }>(
+  const { data, loading, error, refetch } = useQuery<{
+    getAllRelatedEvents: Event[];
+  }>(
     gql`
       query GetAllRelatedEvents {
         getAllRelatedEvents {
@@ -71,6 +76,14 @@ const EventDashboard: React.FC = () => {
     navigate("/login");
   };
 
+  const handleOpenNewEventModal = () => {
+    setIsNewEventModalOpen(true);
+  };
+
+  const handleCloseNewEventModal = () => {
+    setIsNewEventModalOpen(false);
+  };
+
   return (
     <Grid container spacing={2} sx={{ height: "100vh", padding: 2 }}>
       <Grid size={4} sx={{ backgroundColor: "#F5F5F5", padding: 2 }}>
@@ -84,7 +97,7 @@ const EventDashboard: React.FC = () => {
             sx={{ marginTop: 2, backgroundColor: "green" }}
             fullWidth
             variant="contained"
-            onClick={() => navigate("/event/new")}
+            onClick={handleOpenNewEventModal}
           >
             {" "}
             New Event
@@ -102,28 +115,13 @@ const EventDashboard: React.FC = () => {
       <Grid size={8} container direction="column" spacing={2}>
         <EventSection events={managedEvents} sectionTitle="Managed Events" />
         <EventSection events={assistedEvents} sectionTitle="Invited Events" />
-        {/* <Grid sx={{ flex: 1, overflowY: "auto" }}>
-          <Paper sx={{ padding: 2, height: "100%" }}>
-            <Typography variant="h6" sx={{ textAlign: "center" }}>
-              Your Invitations
-            </Typography>
-            {assistedEvents.map((event) => (
-              <EventItem
-                key={event.title}
-                event={event}
-                onClick={() => navigate(`/event/${event._id}`)}
-              />
-            ))}
-          </Paper>
-        </Grid> */}
       </Grid>
 
-      {/* <EventModal
-        open={openModal}
-        onClose={handleCloseModal}
-        event={eventSelected}
-        userEmail={sessionData!.email}
-      ></EventModal> */}
+      <NewEventModal
+        open={isNewEventModalOpen}
+        onClose={handleCloseNewEventModal}
+        refetchEvents={refetch}
+      ></NewEventModal>
     </Grid>
   );
 };

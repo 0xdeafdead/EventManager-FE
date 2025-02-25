@@ -1,6 +1,11 @@
-import { EventSectionProps } from "../../types";
 import { Grid2 as Grid, Paper, Typography } from "@mui/material";
 import EventItem from "./EventItem";
+import { Event } from "../../types";
+
+export interface EventSectionProps {
+  sectionTitle: string;
+  events: Event[];
+}
 
 const EventSection: React.FC<EventSectionProps> = ({
   events,

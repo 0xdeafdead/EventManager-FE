@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { Link, useNavigate } from "react-router-dom";
 
-import { UserInput } from "../../types/user";
-import { SessionData } from "../../types/session";
+import { UserInput } from "../types/user";
+import { SessionData } from "../types/session";
 
 const RegistrationPage: React.FC = () => {
   const navigate = useNavigate();

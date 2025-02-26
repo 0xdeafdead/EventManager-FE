@@ -84,7 +84,6 @@ const EventPage: React.FC = () => {
   const isOwner = userEmail === ownerEmail;
 
   const handleEventResponse = (e: ResponseType) => {
-    console.log(`Update response`);
     respondToEvent({
       variables: {
         input: {
@@ -100,7 +99,6 @@ const EventPage: React.FC = () => {
         window.location.reload();
       })
       .catch((error) => {
-        console.log(error);
         alert(error);
       });
   };
@@ -116,7 +114,6 @@ const EventPage: React.FC = () => {
         window.location.reload();
       })
       .catch((error) => {
-        console.log(error);
         alert(error);
       });
   };
